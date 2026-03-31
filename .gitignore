@@ -1,0 +1,43 @@
+# GENERAL
+.DS_Store
+Thumbs.db
+*.log
+logs/
+*.tmp
+*.swp
+*.bak
+*.orig
+*.rej
+
+# ENV
+.env
+.env.*
+!.env.example
+
+# IDE
+.vscode/
+.idea/
+*.iml
+.project
+.classpath
+.settings/
+.factorypath
+
+# FRONTEND
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/coverage/
+frontend/.eslintcache
+
+# BACKEND
+backend/.gradle/
+backend/build/
+backend/out/
+backend/bin/
+backend/*.class
+backend/*/.class
+
+# TEST REPORTS
+coverage/
+test-results/
