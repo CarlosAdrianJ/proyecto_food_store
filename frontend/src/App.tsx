@@ -1,20 +1,8 @@
 
 import './App.css'
-
+import AdminCategoriesPage from './pages/admin/AdminCategoriesPage'
 function App() {
-  
-
-  return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <div className="hero__content">
-            <h1 className="hero__title">proyecto base levantado correctamente</h1>
-          </div>
-        </div>
-      </section>
-    </>
-  )
+  return <AdminCategoriesPage />
 }
 
 export default App
