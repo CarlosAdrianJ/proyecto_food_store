@@ -110,83 +110,88 @@ export default function AdminCategoriesPage() {
   }
 
   return (
-    <main className="min-h-screen bg-black p-6">
+    <main className="min-h-screen bg-slate-100 p-6">
       <div className="mx-auto max-w-6xl">
-        {/* HEADER */}
-        <div className="mb-6 flex flex-col gap-3 rounded-2xl bg-gradient-to-r from-red-600 via-orange-500 to-yellow-400 p-6 shadow-lg md:flex-row md:items-center md:justify-between">
+        <div className="mb-6 flex flex-col gap-3 rounded-2xl bg-white p-6 shadow-sm md:flex-row md:items-center md:justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-black">
-              🍔 Administración de categorías
+            <h1 className="text-2xl font-bold text-slate-800">
+              Administración de categorías
             </h1>
-            <p className="mt-1 text-black/80">
-              Gestiona tu menú fast food
+            <p className="mt-1 text-slate-500">
+              Alta, edición y eliminación lógica de categorías.
             </p>
           </div>
 
           <button
             onClick={handleOpenCreate}
-            className="rounded-xl bg-black px-4 py-2 font-medium text-yellow-400 hover:bg-neutral-900"
+            className="rounded-xl bg-sky-600 px-4 py-2 font-medium text-white hover:bg-sky-700"
           >
-            + Nueva categoría
+            Nueva categoría
           </button>
         </div>
 
-        {/* ERROR */}
         {error && (
-          <div className="mb-4 rounded-xl border border-red-500 bg-red-900 px-4 py-3 text-red-200">
+          <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-red-700">
             {error}
           </div>
         )}
 
-        {/* TABLE */}
-        <div className="overflow-hidden rounded-2xl bg-neutral-900 shadow-lg border border-neutral-700">
-          <div className="border-b border-neutral-700 px-6 py-4">
-            <h2 className="text-lg font-semibold text-yellow-400">
-              📋 Lista de categorías
+        <div className="overflow-hidden rounded-2xl bg-white shadow-sm">
+          <div className="border-b px-6 py-4">
+            <h2 className="text-lg font-semibold text-slate-800">
+              Tabla de categorías
             </h2>
           </div>
 
           {loading ? (
-            <div className="px-6 py-8 text-neutral-400">Cargando...</div>
+            <div className="px-6 py-8 text-slate-500">Cargando categorías...</div>
           ) : categories.length === 0 ? (
-            <div className="px-6 py-8 text-neutral-400">
+            <div className="px-6 py-8 text-slate-500">
               No hay categorías registradas.
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="min-w-full">
-                <thead className="bg-black">
+                <thead className="bg-slate-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-orange-400">ID</th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-orange-400">Denominación</th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-orange-400">Descripción</th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-orange-400">Acciones</th>
+                    <th className="px-6 py-3 text-left text-sm font-semibold text-slate-600">
+                      ID
+                    </th>
+                    <th className="px-6 py-3 text-left text-sm font-semibold text-slate-600">
+                      Denominación
+                    </th>
+                    <th className="px-6 py-3 text-left text-sm font-semibold text-slate-600">
+                      Descripción
+                    </th>
+                    <th className="px-6 py-3 text-left text-sm font-semibold text-slate-600">
+                      Acciones
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {categories.map((category) => (
-                    <tr key={category.id} className="border-t border-neutral-800 hover:bg-neutral-800 transition">
-                      <td className="px-6 py-4 text-sm text-neutral-300">
+                    <tr key={category.id} className="border-t">
+                      <td className="px-6 py-4 text-sm text-slate-700">
                         {category.id}
                       </td>
-                      <td className="px-6 py-4 text-sm font-medium text-yellow-300">
+                      <td className="px-6 py-4 text-sm font-medium text-slate-800">
                         {category.denominacion}
                       </td>
-                      <td className="px-6 py-4 text-sm text-neutral-400">
+                      <td className="px-6 py-4 text-sm text-slate-600">
                         {category.descripcion || '-'}
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex gap-2">
                           <button
                             onClick={() => handleOpenEdit(category)}
-                            className="rounded-lg bg-orange-500 px-3 py-1.5 text-sm font-medium text-black hover:bg-orange-400"
+                            className="rounded-lg border border-sky-300 px-3 py-1.5 text-sm font-medium text-sky-700 hover:bg-sky-50"
                           >
                             Editar
                           </button>
 
                           <button
                             onClick={() => handleOpenDelete(category)}
-                            className="rounded-lg bg-red-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-red-500"
+                            className="rounded-lg border border-red-300 px-3 py-1.5 text-sm font-medium text-red-700 hover:bg-red-50"
                           >
                             Eliminar
                           </button>
