@@ -3,6 +3,7 @@ package com.foodstore.backend.repository;
 import com.foodstore.backend.model.Producto;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ProductoRepository extends BaseRepository<Producto> {
 
@@ -11,4 +12,7 @@ public interface ProductoRepository extends BaseRepository<Producto> {
     List<Producto> findByDisponibleTrueAndEliminadoFalse();
 
     List<Producto> findByCategoriaIdAndDisponibleTrueAndEliminadoFalse(Long categoriaId);
+
+    Optional<Producto> findByIdAndDisponibleTrueAndEliminadoFalse(Long id);
+
 }

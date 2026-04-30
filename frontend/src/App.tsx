@@ -13,6 +13,7 @@ import ProtectedRoute from './components/auth/ProtectedRoute'
 import LogoutButton from './components/auth/LogoutButton'
 import AdminCategoriesPage from './pages/admin/AdminCategoriesPage'
 import AdminUsersPage from './pages/admin/AdminUsersPage'
+import AdminProductsPage from './pages/admin/AdminProductsPage'
 import LoginPage from './pages/auth/LoginPage'
 import RegisterPage from './pages/auth/RegisterPage'
 import StoreHomePage from './pages/store/StoreHomePage'
@@ -81,6 +82,9 @@ function FoodStoreLayout({ children }: FoodStoreLayoutProps) {
 
                 <NavLink to="/admin/users" className={navLinkClass}>
                   Admin usuarios
+                </NavLink>
+                <NavLink to="/admin/products" className={navLinkClass}>
+                  Admin productos
                 </NavLink>
               </>
             )}
@@ -210,7 +214,16 @@ function App() {
             </ProtectedRoute>
           }
         />
-
+<Route
+  path="/admin/products"
+  element={
+    <ProtectedRoute allowedRoles={['ADMIN']}>
+      <FoodStoreLayout>
+        <AdminProductsPage />
+      </FoodStoreLayout>
+    </ProtectedRoute>
+  }
+/>
         <Route path="*" element={<RootRedirect />} />
       </Routes>
     </BrowserRouter>
