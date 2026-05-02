@@ -64,3 +64,17 @@ export async function deleteProduct(id: number): Promise<void> {
 
   return handleResponse<void>(response)
 }
+export async function getCatalogProducts(): Promise<Product[]> {
+  const response = await fetch(`${PRODUCTS_BASE_URL}/catalog`)
+  return handleResponse<Product[]>(response)
+}
+
+export async function getCatalogProductById(id: number): Promise<Product> {
+  const response = await fetch(`${PRODUCTS_BASE_URL}/catalog/${id}`)
+  return handleResponse<Product>(response)
+}
+
+export async function getCatalogProductsByCategory(categoryId: number): Promise<Product[]> {
+  const response = await fetch(`${PRODUCTS_BASE_URL}/catalog/category/${categoryId}`)
+  return handleResponse<Product[]>(response)
+}

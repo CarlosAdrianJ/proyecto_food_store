@@ -1,11 +1,14 @@
- package com.foodstore.backend.model;
+package com.foodstore.backend.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @Entity
 public class DetallePedido extends Base {
@@ -25,7 +28,24 @@ public class DetallePedido extends Base {
     private BigDecimal precioUnitario;
 
     @Column(nullable = false, precision = 12, scale = 2)
-    private BigDecimal subtotal;
+    private BigDecimal subtotal = BigDecimal.ZERO;
+
+    @PrePersist
+    @PreUpdate
+    public void recalcularSubtotalAntesDeGuardar() {
+        recalcularSubtotal();
+    }
+
+    public void recalcularSubtotal() {
+        if (precioUnitario == null || cantidad == null) {
+            this.subtotal = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
+            return;
+        }
+
+        this.subtotal = precioUnitario
+                .multiply(BigDecimal.valueOf(cantidad))
+                .setScale(2, RoundingMode.HALF_UP);
+    }
 
     public Pedido getPedido() {
         return pedido;
@@ -49,6 +69,7 @@ public class DetallePedido extends Base {
 
     public void setCantidad(Integer cantidad) {
         this.cantidad = cantidad;
+        recalcularSubtotal();
     }
 
     public BigDecimal getPrecioUnitario() {
@@ -57,6 +78,7 @@ public class DetallePedido extends Base {
 
     public void setPrecioUnitario(BigDecimal precioUnitario) {
         this.precioUnitario = precioUnitario;
+        recalcularSubtotal();
     }
 
     public BigDecimal getSubtotal() {

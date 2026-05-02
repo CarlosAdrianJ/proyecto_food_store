@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import type { ReactNode } from "react";
 import {
   BrowserRouter,
   Navigate,
@@ -6,58 +6,63 @@ import {
   Route,
   Routes,
   useLocation,
-} from 'react-router-dom'
+} from "react-router-dom";
 
-import GuestRoute from './components/auth/GuestRoute'
-import ProtectedRoute from './components/auth/ProtectedRoute'
-import LogoutButton from './components/auth/LogoutButton'
-import AdminCategoriesPage from './pages/admin/AdminCategoriesPage'
-import AdminUsersPage from './pages/admin/AdminUsersPage'
-import AdminProductsPage from './pages/admin/AdminProductsPage'
-import LoginPage from './pages/auth/LoginPage'
-import RegisterPage from './pages/auth/RegisterPage'
-import StoreHomePage from './pages/store/StoreHomePage'
-import { getAuthUser, getRedirectPathByRole } from './utils/authStorage'
+import GuestRoute from "./components/auth/GuestRoute";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
+import LogoutButton from "./components/auth/LogoutButton";
+import AdminCategoriesPage from "./pages/admin/AdminCategoriesPage";
+import AdminUsersPage from "./pages/admin/AdminUsersPage";
+import AdminProductsPage from "./pages/admin/AdminProductsPage";
+import LoginPage from "./pages/auth/LoginPage";
+import RegisterPage from "./pages/auth/RegisterPage";
+import StoreHomePage from "./pages/store/StoreHomePage";
+import { getAuthUser, getRedirectPathByRole } from "./utils/authStorage";
+import ProductDetailPage from "./pages/store/ProductDetailPage";
+import CartPage from "./pages/store/CartPage";
 
 const categories = [
-  { name: 'Pizzas', emoji: '🍕', color: 'from-yellow-400 to-orange-500' },
-  { name: 'Hamburguesas', emoji: '🍔', color: 'from-red-400 to-orange-500' },
-  { name: 'Sándwiches', emoji: '🥪', color: 'from-orange-400 to-yellow-500' },
-]
+  { name: "Pizzas", emoji: "🍕", color: "from-yellow-400 to-orange-500" },
+  { name: "Hamburguesas", emoji: "🍔", color: "from-red-400 to-orange-500" },
+  { name: "Sándwiches", emoji: "🥪", color: "from-orange-400 to-yellow-500" },
+];
 
 function RootRedirect() {
-  const user = getAuthUser()
+  const user = getAuthUser();
 
   if (!user) {
-    return <Navigate to="/login" replace />
+    return <Navigate to="/login" replace />;
   }
 
-  return <Navigate to={getRedirectPathByRole(user.rol)} replace />
+  return <Navigate to={getRedirectPathByRole(user.rol)} replace />;
 }
 
 type FoodStoreLayoutProps = {
-  children: ReactNode
-}
+  children: ReactNode;
+};
 
 function FoodStoreLayout({ children }: FoodStoreLayoutProps) {
-  const location = useLocation()
-  const user = getAuthUser()
+  const location = useLocation();
+  const user = getAuthUser();
 
-  const isStorePage = location.pathname === '/store'
-  const isAdmin = user?.rol === 'ADMIN'
+  const isStorePage = location.pathname === "/store";
+  const isAdmin = user?.rol === "ADMIN";
 
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
     `rounded-xl px-4 py-2 text-sm font-medium transition ${
       isActive
-        ? 'bg-orange-500 text-white shadow-md'
-        : 'bg-white text-gray-700 hover:bg-orange-100'
-    }`
+        ? "bg-orange-500 text-white shadow-md"
+        : "bg-white text-gray-700 hover:bg-orange-100"
+    }`;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50">
       <header className="sticky top-0 z-50 border-b border-orange-200 bg-white/70 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-          <NavLink to="/store" className="text-2xl font-extrabold text-orange-600">
+          <NavLink
+            to="/store"
+            className="text-2xl font-extrabold text-orange-600"
+          >
             🍔 FastFood Delivery
           </NavLink>
 
@@ -74,6 +79,9 @@ function FoodStoreLayout({ children }: FoodStoreLayoutProps) {
               Ofertas
             </NavLink>
 
+            <NavLink to="/store/cart" className={navLinkClass}>
+              Carrito
+            </NavLink>
             {isAdmin && (
               <>
                 <NavLink to="/admin/categories" className={navLinkClass}>
@@ -103,7 +111,8 @@ function FoodStoreLayout({ children }: FoodStoreLayoutProps) {
               </h2>
 
               <p className="text-lg text-white/90">
-                Las mejores pizzas, hamburguesas y sándwiches en minutos en tu casa.
+                Las mejores pizzas, hamburguesas y sándwiches en minutos en tu
+                casa.
               </p>
 
               <div className="mt-6 flex gap-3">
@@ -129,9 +138,9 @@ function FoodStoreLayout({ children }: FoodStoreLayoutProps) {
               <div
                 key={cat.name}
                 className={
-                  'cursor-pointer rounded-2xl bg-gradient-to-r ' +
+                  "cursor-pointer rounded-2xl bg-gradient-to-r " +
                   cat.color +
-                  ' p-6 text-white shadow-lg transition-transform hover:scale-105'
+                  " p-6 text-white shadow-lg transition-transform hover:scale-105"
                 }
               >
                 <div className="mb-2 text-4xl">{cat.emoji}</div>
@@ -155,7 +164,7 @@ function FoodStoreLayout({ children }: FoodStoreLayoutProps) {
         </div>
       </footer>
     </div>
-  )
+  );
 }
 
 function App() {
@@ -185,7 +194,7 @@ function App() {
         <Route
           path="/store"
           element={
-            <ProtectedRoute allowedRoles={['ADMIN', 'USUARIO']}>
+            <ProtectedRoute allowedRoles={["ADMIN", "USUARIO"]}>
               <FoodStoreLayout>
                 <StoreHomePage />
               </FoodStoreLayout>
@@ -196,7 +205,7 @@ function App() {
         <Route
           path="/admin/categories"
           element={
-            <ProtectedRoute allowedRoles={['ADMIN']}>
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
               <FoodStoreLayout>
                 <AdminCategoriesPage />
               </FoodStoreLayout>
@@ -207,27 +216,48 @@ function App() {
         <Route
           path="/admin/users"
           element={
-            <ProtectedRoute allowedRoles={['ADMIN']}>
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
               <FoodStoreLayout>
                 <AdminUsersPage />
               </FoodStoreLayout>
             </ProtectedRoute>
           }
         />
-<Route
-  path="/admin/products"
-  element={
-    <ProtectedRoute allowedRoles={['ADMIN']}>
-      <FoodStoreLayout>
-        <AdminProductsPage />
-      </FoodStoreLayout>
-    </ProtectedRoute>
-  }
-/>
+        <Route
+          path="/admin/products"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
+              <FoodStoreLayout>
+                <AdminProductsPage />
+              </FoodStoreLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/store/product/:id"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN", "USUARIO"]}>
+              <FoodStoreLayout>
+                <ProductDetailPage />
+              </FoodStoreLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/store/cart"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN", "USUARIO"]}>
+              <FoodStoreLayout>
+                <CartPage />
+              </FoodStoreLayout>
+            </ProtectedRoute>
+          }
+        />
+
         <Route path="*" element={<RootRedirect />} />
       </Routes>
     </BrowserRouter>
-  )
+  );
 }
 
-export default App
+export default App;

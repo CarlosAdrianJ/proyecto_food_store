@@ -1,5 +1,6 @@
 package com.foodstore.backend.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -7,8 +8,10 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,8 +37,63 @@ public class Pedido extends Base {
     @Column(nullable = false, length = 30)
     private FormaPago formaPago;
 
-    @OneToMany(mappedBy = "pedido")
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DetallePedido> detalles = new ArrayList<>();
+
+    @PrePersist
+    public void inicializarPedido() {
+        if (fechaPedido == null) {
+            fechaPedido = LocalDateTime.now();
+        }
+
+        if (estado == null) {
+            estado = EstadoPedido.PENDIENTE;
+        }
+
+        recalcularTotal();
+    }
+
+    public void addDetalle(DetallePedido detalle) {
+        if (detalle == null) {
+            return;
+        }
+
+        detalle.setPedido(this);
+        detalle.recalcularSubtotal();
+        this.detalles.add(detalle);
+        recalcularTotal();
+    }
+
+    public void removeDetalle(DetallePedido detalle) {
+        if (detalle == null) {
+            return;
+        }
+
+        this.detalles.remove(detalle);
+        detalle.setPedido(null);
+        recalcularTotal();
+    }
+
+    public void clearDetalles() {
+        for (DetallePedido detalle : detalles) {
+            detalle.setPedido(null);
+        }
+        detalles.clear();
+        recalcularTotal();
+    }
+
+    public void recalcularTotal() {
+        BigDecimal nuevoTotal = BigDecimal.ZERO;
+
+        for (DetallePedido detalle : detalles) {
+            detalle.recalcularSubtotal();
+            if (detalle.getSubtotal() != null) {
+                nuevoTotal = nuevoTotal.add(detalle.getSubtotal());
+            }
+        }
+
+        this.total = nuevoTotal.setScale(2, RoundingMode.HALF_UP);
+    }
 
     public Usuario getUsuario() {
         return usuario;
@@ -82,6 +140,14 @@ public class Pedido extends Base {
     }
 
     public void setDetalles(List<DetallePedido> detalles) {
-        this.detalles = detalles;
+        this.detalles.clear();
+
+        if (detalles != null) {
+            for (DetallePedido detalle : detalles) {
+                addDetalle(detalle);
+            }
+        }
+
+        recalcularTotal();
     }
 }
