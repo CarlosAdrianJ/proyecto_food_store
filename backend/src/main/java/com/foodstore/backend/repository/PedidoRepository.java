@@ -7,4 +7,5 @@ import java.util.List;
 public interface PedidoRepository extends BaseRepository<Pedido> {
 
     List<Pedido> findByUsuarioIdAndEliminadoFalse(Long usuarioId);
+    List<Pedido> findByUsuarioIdAndEliminadoFalseOrderByFechaPedidoDesc(Long usuarioId);
 }

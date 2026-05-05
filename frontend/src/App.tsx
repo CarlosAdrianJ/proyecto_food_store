@@ -20,6 +20,8 @@ import StoreHomePage from "./pages/store/StoreHomePage";
 import { getAuthUser, getRedirectPathByRole } from "./utils/authStorage";
 import ProductDetailPage from "./pages/store/ProductDetailPage";
 import CartPage from "./pages/store/CartPage";
+import MyOrdersPage from "./pages/store/MyOrdersPage";
+import AdminOrdersPage from "./pages/admin/AdminOrdersPage";
 
 const categories = [
   { name: "Pizzas", emoji: "🍕", color: "from-yellow-400 to-orange-500" },
@@ -82,6 +84,9 @@ function FoodStoreLayout({ children }: FoodStoreLayoutProps) {
             <NavLink to="/store/cart" className={navLinkClass}>
               Carrito
             </NavLink>
+            <NavLink to="/store/my-orders" className={navLinkClass}>
+              Mis pedidos
+            </NavLink>
             {isAdmin && (
               <>
                 <NavLink to="/admin/categories" className={navLinkClass}>
@@ -93,6 +98,9 @@ function FoodStoreLayout({ children }: FoodStoreLayoutProps) {
                 </NavLink>
                 <NavLink to="/admin/products" className={navLinkClass}>
                   Admin productos
+                </NavLink>
+                <NavLink to="/admin/orders" className={navLinkClass}>
+                  Admin pedidos
                 </NavLink>
               </>
             )}
@@ -253,7 +261,26 @@ function App() {
             </ProtectedRoute>
           }
         />
-
+        <Route
+          path="/store/my-orders"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN", "USUARIO"]}>
+              <FoodStoreLayout>
+                <MyOrdersPage />
+              </FoodStoreLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/orders"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
+              <FoodStoreLayout>
+                <AdminOrdersPage />
+              </FoodStoreLayout>
+            </ProtectedRoute>
+          }
+        />
         <Route path="*" element={<RootRedirect />} />
       </Routes>
     </BrowserRouter>
