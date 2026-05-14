@@ -84,7 +84,7 @@ export default function AdminOrdersPage() {
 
   return (
     <main className="min-h-screen bg-slate-100 p-6">
-      <div className="mx-auto max-w-7xl">
+      <div className="max-w-7xl mx-auto px-4">
         <div className="mb-6 rounded-2xl bg-white p-6 shadow-sm">
           <h1 className="text-2xl font-bold text-slate-800">
             Dashboard de pedidos

@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import CartBadge from '../../components/store/CartBadge'
 import CartItemRow from '../../components/store/CartItemRow'
+import CheckoutConfirmModal from '../../components/store/CheckoutConfirmModal'
+import OrderSuccessModal from '../../components/store/OrderSuccessModal'
 import { createOrder } from '../../services/orderService'
-import type { FormaPago, OrderCreatePayload } from '../../types/order'
+import type { FormaPago, Order, OrderCreatePayload } from '../../types/order'
 import { getAuthUser } from '../../utils/authStorage'
 import {
   clearCart,
@@ -18,12 +20,16 @@ import {
 } from '../../utils/cartStorage'
 
 export default function CartPage() {
+  const navigate = useNavigate()
+
   const [items, setItems] = useState(getCart())
   const [cartCount, setCartCount] = useState(getCartItemsCount())
   const [paymentMethod, setPaymentMethod] = useState<FormaPago>('EFECTIVO')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [successMessage, setSuccessMessage] = useState<string | null>(null)
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false)
+  const [successModalOpen, setSuccessModalOpen] = useState(false)
+  const [createdOrder, setCreatedOrder] = useState<Order | null>(null)
 
   useEffect(() => {
     const unsubscribe = subscribeCartUpdates(() => {
@@ -44,14 +50,12 @@ export default function CartPage() {
     increaseProductQuantity(productId)
     setItems(getCart())
     setCartCount(getCartItemsCount())
-    setSuccessMessage(null)
   }
 
   function handleDecrease(productId: number) {
     decreaseProductQuantity(productId)
     setItems(getCart())
     setCartCount(getCartItemsCount())
-    setSuccessMessage(null)
   }
 
   function handleChangeQuantity(productId: number, quantity: number) {
@@ -60,24 +64,21 @@ export default function CartPage() {
     updateProductQuantity(productId, quantity)
     setItems(getCart())
     setCartCount(getCartItemsCount())
-    setSuccessMessage(null)
   }
 
   function handleRemove(productId: number) {
     removeProductFromCart(productId)
     setItems(getCart())
     setCartCount(getCartItemsCount())
-    setSuccessMessage(null)
   }
 
   function handleClearCart() {
     clearCart()
     setItems([])
     setCartCount(0)
-    setSuccessMessage(null)
   }
 
-  async function handleCheckout(e: React.FormEvent) {
+  function handleOpenConfirmModal(e: React.FormEvent) {
     e.preventDefault()
 
     const authUser = getAuthUser()
@@ -97,9 +98,41 @@ export default function CartPage() {
       return
     }
 
+    setError(null)
+    setConfirmModalOpen(true)
+  }
+
+  async function handleConfirmCheckout(formData: {
+    telefonoEntrega: string
+    direccionEntrega: string
+    notasAdicionales: string
+  }) {
+    const authUser = getAuthUser()
+
+    if (!authUser) {
+      setError('Debes iniciar sesión para continuar con la compra.')
+      setConfirmModalOpen(false)
+      return
+    }
+
+    if (items.length === 0) {
+      setError('El carrito está vacío.')
+      setConfirmModalOpen(false)
+      return
+    }
+
+    if (hasInvalidStock) {
+      setError('Hay productos con stock inválido. Revisa el carrito antes de continuar.')
+      setConfirmModalOpen(false)
+      return
+    }
+
     const payload: OrderCreatePayload = {
       usuarioId: authUser.id,
       formaPago: paymentMethod,
+      telefonoEntrega: formData.telefonoEntrega,
+      direccionEntrega: formData.direccionEntrega,
+      notasAdicionales: formData.notasAdicionales,
       detalles: items.map((item) => ({
         productoId: item.productId,
         cantidad: item.cantidad,
@@ -109,23 +142,37 @@ export default function CartPage() {
     try {
       setIsSubmitting(true)
       setError(null)
-      setSuccessMessage(null)
 
-      await createOrder(payload)
+      const order = await createOrder(payload)
+
+      setCreatedOrder(order)
 
       clearCart()
       setItems([])
       setCartCount(0)
-      setSuccessMessage('Pedido generado correctamente.')
+
+      setConfirmModalOpen(false)
+      setSuccessModalOpen(true)
     } catch (err) {
       setError(
         err instanceof Error
           ? err.message
           : 'No se pudo generar el pedido.'
       )
+      setConfirmModalOpen(false)
     } finally {
       setIsSubmitting(false)
     }
+  }
+
+  function handleGoToOrders() {
+    setSuccessModalOpen(false)
+    navigate('/store/my-orders')
+  }
+
+  function handleContinueShopping() {
+    setSuccessModalOpen(false)
+    navigate('/store')
   }
 
   return (
@@ -151,12 +198,6 @@ export default function CartPage() {
       {error && (
         <div className="mb-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-red-700">
           {error}
-        </div>
-      )}
-
-      {successMessage && (
-        <div className="mb-4 rounded-2xl border border-green-200 bg-green-50 px-4 py-3 text-green-700">
-          {successMessage}
         </div>
       )}
 
@@ -222,11 +263,12 @@ export default function CartPage() {
               </div>
             )}
 
-            <form onSubmit={handleCheckout} className="mt-6 space-y-4">
+            <form onSubmit={handleOpenConfirmModal} className="mt-6 space-y-4">
               <div>
                 <label className="mb-1 block text-sm font-medium text-slate-700">
                   Forma de pago
                 </label>
+
                 <select
                   value={paymentMethod}
                   onChange={(e) =>
@@ -245,16 +287,37 @@ export default function CartPage() {
                 disabled={isSubmitting || hasInvalidStock || items.length === 0}
                 className="w-full rounded-2xl bg-orange-500 px-6 py-3 font-semibold text-white hover:bg-orange-600 disabled:cursor-not-allowed disabled:bg-slate-300"
               >
-                {isSubmitting ? 'Procesando...' : 'Confirmar compra'}
+                Confirmar compra
               </button>
             </form>
 
             <p className="mt-4 text-xs text-slate-500">
-              El payload del pedido se prepara desde acá usando usuario, forma de pago y detalle de productos.
+              Desde aquí se prepara el pedido real antes de enviarlo.
             </p>
           </aside>
         </div>
       )}
+
+      <CheckoutConfirmModal
+        isOpen={confirmModalOpen}
+        items={items}
+        total={total}
+        formaPago={paymentMethod}
+        isSubmitting={isSubmitting}
+        onClose={() => {
+          if (isSubmitting) return
+          setConfirmModalOpen(false)
+        }}
+        onConfirm={handleConfirmCheckout}
+      />
+
+      <OrderSuccessModal
+        isOpen={successModalOpen}
+        orderId={createdOrder?.id ?? null}
+        total={createdOrder?.total ?? 0}
+        onGoToOrders={handleGoToOrders}
+        onContinueShopping={handleContinueShopping}
+      />
     </main>
   )
 }

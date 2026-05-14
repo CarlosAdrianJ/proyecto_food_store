@@ -91,7 +91,7 @@ export default function ProductDetailPage() {
 
   if (loading) {
     return (
-      <main className="mx-auto max-w-6xl px-4 py-8">
+      <main className="w-[70%] mx-auto px-4 py-8">
         <div className="rounded-2xl bg-white p-8 text-slate-500 shadow-sm">
           Cargando detalle del producto...
         </div>
@@ -101,7 +101,7 @@ export default function ProductDetailPage() {
 
   if (error || !product) {
     return (
-      <main className="mx-auto max-w-6xl px-4 py-8">
+      <main className="w-[70%] mx-auto px-4 py-8">
         <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-red-700">
           {error || 'No se encontró el producto.'}
         </div>
@@ -119,7 +119,7 @@ export default function ProductDetailPage() {
   const sinStock = product.stock <= 0
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-8">
+    <main className="w-[70%] mx-auto px-4 py-8">
       <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <Link

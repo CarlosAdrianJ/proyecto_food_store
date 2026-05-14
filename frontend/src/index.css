@@ -52,7 +52,7 @@
 }
 
 #root {
-  width: 1126px;
+  width: 100%;
   max-width: 100%;
   margin: 0 auto;
   text-align: center;
@@ -66,6 +66,7 @@
 body {
   margin: 0;
 }
+
 
 h1,
 h2 {
@@ -109,4 +110,16 @@ code {
   line-height: 135%;
   padding: 4px 8px;
   background: var(--code-bg);
+}
+
+.text-stroke {
+  text-shadow:
+    -1px -1px 0 rgba(0, 0, 0, 0.3),
+    1px -1px 0 rgba(0, 0, 0, 0.3),
+    -1px 1px 0 rgba(0, 0, 0, 0.3),
+    1px 1px 0 rgba(0, 0, 0, 0.3),
+    -2px 0 0 rgba(0, 0, 0, 0.2),
+    2px 0 0 rgba(0, 0, 0, 0.2),
+    0 -2px 0 rgba(0, 0, 0, 0.2),
+    0 2px 0 rgba(0, 0, 0, 0.2);
 }

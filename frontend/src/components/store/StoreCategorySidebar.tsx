@@ -14,10 +14,10 @@ export default function StoreCategorySidebar({
   onSelectCategory,
 }: StoreCategorySidebarProps) {
   return (
-    <aside className="w-full rounded-2xl border border-slate-200 bg-white p-4 shadow-sm lg:w-72">
+    <aside className="w-full rounded-3xl bg-gradient-to-b from-yellow-100 via-orange-100 to-red-100 p-5 shadow-lg lg:w-72">
       <div className="mb-4">
-        <h2 className="text-lg font-bold text-slate-800">Categorías</h2>
-        <p className="text-sm text-slate-500">
+        <h2 className="text-lg font-bold text-orange-900">Categorías</h2>
+        <p className="text-sm text-orange-700">
           Navega el store por categoría.
         </p>
       </div>
@@ -31,10 +31,10 @@ export default function StoreCategorySidebar({
           <button
             type="button"
             onClick={() => onSelectCategory(null)}
-            className={`rounded-xl px-4 py-2 text-left text-sm font-medium transition ${
+            className={`rounded-2xl px-4 py-3 text-left text-sm font-semibold transition-shadow shadow-sm ${
               selectedCategoryId === null
-                ? 'bg-sky-600 text-white'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-xl'
+                : 'bg-white/90 text-orange-800 hover:bg-orange-100 hover:text-orange-900'
             }`}
           >
             Todas
@@ -45,10 +45,10 @@ export default function StoreCategorySidebar({
               key={category.id}
               type="button"
               onClick={() => onSelectCategory(category.id)}
-              className={`rounded-xl px-4 py-2 text-left text-sm font-medium transition ${
+              className={`rounded-2xl px-4 py-3 text-left text-sm font-semibold transition-shadow shadow-sm ${
                 selectedCategoryId === category.id
-                  ? 'bg-sky-600 text-white'
-                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-xl'
+                  : 'bg-white/90 text-orange-800 hover:bg-orange-100 hover:text-orange-900'
               }`}
             >
               {category.denominacion}

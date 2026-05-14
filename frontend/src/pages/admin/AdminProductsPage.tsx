@@ -118,7 +118,7 @@ export default function AdminProductsPage() {
 
   return (
     <main className="min-h-screen bg-slate-100 p-6">
-      <div className="mx-auto max-w-7xl">
+      <div className="max-w-7xl mx-auto px-4">
         <div className="mb-6 flex flex-col gap-3 rounded-2xl bg-white p-6 shadow-sm md:flex-row md:items-center md:justify-between">
           <div>
             <h1 className="text-2xl font-bold text-slate-800">

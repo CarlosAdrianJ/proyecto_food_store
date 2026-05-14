@@ -30,9 +30,11 @@ public class PedidoService {
     private final UsuarioRepository usuarioRepository;
     private final ProductoRepository productoRepository;
 
-    public PedidoService(PedidoRepository pedidoRepository,
-                         UsuarioRepository usuarioRepository,
-                         ProductoRepository productoRepository) {
+    public PedidoService(
+            PedidoRepository pedidoRepository,
+            UsuarioRepository usuarioRepository,
+            ProductoRepository productoRepository
+    ) {
         this.pedidoRepository = pedidoRepository;
         this.usuarioRepository = usuarioRepository;
         this.productoRepository = productoRepository;
@@ -50,6 +52,9 @@ public class PedidoService {
         pedido.setUsuario(usuario);
         pedido.setFormaPago(dto.formaPago());
         pedido.setEstado(EstadoPedido.PENDIENTE);
+        pedido.setTelefonoEntrega(normalizar(dto.telefonoEntrega()));
+        pedido.setDireccionEntrega(normalizar(dto.direccionEntrega()));
+        pedido.setNotasAdicionales(normalizarNullable(dto.notasAdicionales()));
 
         Set<Long> productosProcesados = new HashSet<>();
 
@@ -143,6 +148,9 @@ public class PedidoService {
                 pedido.getTotal(),
                 pedido.getEstado(),
                 pedido.getFormaPago(),
+                pedido.getTelefonoEntrega(),
+                pedido.getDireccionEntrega(),
+                pedido.getNotasAdicionales(),
                 pedido.getDetalles().stream().map(this::toDetalleDto).toList(),
                 pedido.getCreatedAt(),
                 pedido.getUpdatedAt(),
@@ -159,5 +167,18 @@ public class PedidoService {
                 detalle.getPrecioUnitario(),
                 detalle.getSubtotal()
         );
+    }
+
+    private String normalizar(String valor) {
+        return valor == null ? null : valor.trim();
+    }
+
+    private String normalizarNullable(String valor) {
+        if (valor == null) {
+            return null;
+        }
+
+        String texto = valor.trim();
+        return texto.isEmpty() ? null : texto;
     }
 }

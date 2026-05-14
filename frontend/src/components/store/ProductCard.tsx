@@ -13,13 +13,13 @@ export default function ProductCard({
   const sinStock = product.stock <= 0
 
   return (
-    <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-      <div className="flex h-44 items-center justify-center bg-slate-100">
+    <article className="overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-br from-yellow-50 via-orange-50 to-red-50 shadow-sm">
+      <div className="flex h-44 items-center justify-center bg-gradient-to-br from-yellow-100 via-orange-100 to-red-100">
         {product.imagenUrl ? (
           <img
             src={product.imagenUrl}
             alt={product.denominacion}
-            className="h-full w-full object-cover"
+            className="h-full w-full object-contain"
           />
         ) : (
           <span className="text-5xl">🍔</span>

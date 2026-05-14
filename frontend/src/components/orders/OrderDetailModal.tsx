@@ -62,7 +62,32 @@ export default function OrderDetailModal({
               </p>
             </div>
           </div>
+          <div className="rounded-2xl border border-slate-200 p-4">
+  <h3 className="text-lg font-bold text-slate-800">Datos de entrega</h3>
 
+  <div className="mt-4 grid gap-4 md:grid-cols-2">
+    <div className="rounded-2xl bg-slate-50 p-4">
+      <p className="text-sm text-slate-500">Teléfono</p>
+      <p className="mt-1 font-semibold text-slate-800">
+        {order.telefonoEntrega}
+      </p>
+    </div>
+
+    <div className="rounded-2xl bg-slate-50 p-4">
+      <p className="text-sm text-slate-500">Dirección</p>
+      <p className="mt-1 font-semibold text-slate-800">
+        {order.direccionEntrega}
+      </p>
+    </div>
+
+    <div className="rounded-2xl bg-slate-50 p-4 md:col-span-2">
+      <p className="text-sm text-slate-500">Notas adicionales</p>
+      <p className="mt-1 font-semibold text-slate-800">
+        {order.notasAdicionales || 'Sin notas adicionales.'}
+      </p>
+    </div>
+  </div>
+</div>
           <div>
             <h3 className="text-lg font-bold text-slate-800">Ítems del pedido</h3>
 

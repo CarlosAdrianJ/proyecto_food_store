@@ -1,12 +1,14 @@
 import type { ReactNode } from "react";
 import {
   BrowserRouter,
+  Link,
   Navigate,
   NavLink,
   Route,
   Routes,
   useLocation,
 } from "react-router-dom";
+import { useState } from "react";
 
 import GuestRoute from "./components/auth/GuestRoute";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
@@ -24,9 +26,31 @@ import MyOrdersPage from "./pages/store/MyOrdersPage";
 import AdminOrdersPage from "./pages/admin/AdminOrdersPage";
 
 const categories = [
-  { name: "Pizzas", emoji: "🍕", color: "from-yellow-400 to-orange-500" },
-  { name: "Hamburguesas", emoji: "🍔", color: "from-red-400 to-orange-500" },
-  { name: "Sándwiches", emoji: "🥪", color: "from-orange-400 to-yellow-500" },
+  {
+    name: "Promociones",
+    emoji: "🔥",
+    color: "from-yellow-300 to-orange-400",
+    subtitle: "Hasta 20% off pizzas y empanadas",
+    link: "/store?offer=dia",
+    cta: "Ver ofertas del día",
+  },
+  {
+    name: "Descuentos",
+    emoji: "🍔",
+    color: "from-orange-200 to-red-300",
+    subtitle:
+      "Lunes: descuento 10% con MODO\nMiercoles: descuento 5% por compras superiores a $70.000\nViernes: descuento 10% con Tarjeta Visa de todos los bancos",
+    link: "/store",
+    cta: "Ver descuentos",
+  },
+  {
+    name: "Sándwiches",
+    emoji: "🥪",
+    color: "from-red-200 to-yellow-300",
+    subtitle: "Sabores rápidos y frescos",
+    link: "/store",
+    cta: "Ver sándwiches",
+  },
 ];
 
 function RootRedirect() {
@@ -54,18 +78,39 @@ function FoodStoreLayout({ children }: FoodStoreLayoutProps) {
     `rounded-xl px-4 py-2 text-sm font-medium transition ${
       isActive
         ? "bg-orange-500 text-white shadow-md"
-        : "bg-white text-gray-700 hover:bg-orange-100"
+        : "bg-orange-50 text-orange-800 hover:bg-orange-100"
     }`;
+
+  const carouselImages = [
+    { src: 'https://ik.imagekit.io/rooxjlwlq/b2d8905d-5ab3-47bb-b867-e707151dd245.jpeg', alt: 'Postre Rogel' },
+    { src: 'https://ik.imagekit.io/rooxjlwlq/unnamed%20(3).jpg', alt: 'Milanesa food store' },
+    { src: 'https://ik.imagekit.io/rooxjlwlq/unnamed%20(4).jpg', alt: 'Pizza con huevo' },
+    { src: 'https://ik.imagekit.io/rooxjlwlq/426c0bae-b428-4e11-9d43-13b19a8d0e53.jpeg', alt: 'Triple de pollo' },
+  ];
+
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  const nextImage = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % carouselImages.length);
+  };
+
+  const prevImage = () => {
+    setCurrentImageIndex((prev) => (prev - 1 + carouselImages.length) % carouselImages.length);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50">
       <header className="sticky top-0 z-50 border-b border-orange-200 bg-white/70 backdrop-blur-md">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
+        <div className="w-[70%] mx-auto flex items-center justify-between px-4 py-3">
           <NavLink
             to="/store"
-            className="text-2xl font-extrabold text-orange-600"
+            className="flex items-center gap-3"
           >
-            🍔 FastFood Delivery
+            <img
+              src="https://ik.imagekit.io/rooxjlwlq/logo%20Food%20Store.png?updatedAt=1777731567524"
+              alt="Food Store Logo"
+              className="h-35 w-auto"
+            />
           </NavLink>
 
           <nav className="flex flex-wrap items-center gap-2">
@@ -73,13 +118,17 @@ function FoodStoreLayout({ children }: FoodStoreLayoutProps) {
               Inicio
             </NavLink>
 
-            <NavLink to="/store" className={navLinkClass}>
-              Menú
-            </NavLink>
+            {!isAdmin && (
+              <>
+                <NavLink to="/store" className={navLinkClass}>
+                  Menú
+                </NavLink>
 
-            <NavLink to="/store" className={navLinkClass}>
-              Ofertas
-            </NavLink>
+                <NavLink to="/store" className={navLinkClass}>
+                  Ofertas
+                </NavLink>
+              </>
+            )}
 
             <NavLink to="/store/cart" className={navLinkClass}>
               Carrito
@@ -112,62 +161,90 @@ function FoodStoreLayout({ children }: FoodStoreLayoutProps) {
 
       {isStorePage && (
         <>
-          <section className="mx-auto max-w-6xl px-4 py-10">
-            <div className="rounded-3xl bg-gradient-to-r from-orange-500 via-red-500 to-yellow-500 p-10 text-white shadow-xl">
-              <h2 className="mb-3 text-4xl font-bold">
-                Pedí lo que quieras, cuando quieras 🍕🍔🥪
-              </h2>
-
-              <p className="text-lg text-white/90">
-                Las mejores pizzas, hamburguesas y sándwiches en minutos en tu
-                casa.
-              </p>
-
-              <div className="mt-6 flex gap-3">
-                <NavLink
-                  to="/store"
-                  className="rounded-xl bg-white px-5 py-2 font-semibold text-orange-600 transition hover:bg-gray-100"
-                >
-                  Ver menú
-                </NavLink>
-
-                <NavLink
-                  to="/store"
-                  className="rounded-xl bg-black/20 px-5 py-2 font-semibold transition hover:bg-black/30"
-                >
-                  Ofertas del día
-                </NavLink>
+          <section className="w-[70%] mx-auto px-4 py-10">
+            <div className="relative rounded-3xl overflow-hidden shadow-xl">
+              <img
+                src={carouselImages[currentImageIndex].src}
+                alt={carouselImages[currentImageIndex].alt}
+                className="w-full h-[44rem] object-cover object-center"
+              />
+              <button
+                onClick={prevImage}
+                className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-2 rounded-full hover:bg-black/70 transition"
+              >
+                ‹
+              </button>
+              <button
+                onClick={nextImage}
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-2 rounded-full hover:bg-black/70 transition"
+              >
+                ›
+              </button>
+              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
+                {carouselImages.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentImageIndex(index)}
+                    className={`w-3 h-3 rounded-full ${index === currentImageIndex ? 'bg-white' : 'bg-white/50'}`}
+                  />
+                ))}
               </div>
             </div>
           </section>
 
-          <section className="mx-auto mb-10 grid max-w-6xl grid-cols-1 gap-6 px-4 md:grid-cols-3">
-            {categories.map((cat) => (
-              <div
+          <section className="w-[70%] mx-auto mb-10 grid grid-cols-1 gap-6 px-4 md:grid-cols-3">
+            {categories.map((cat) => {
+              const renderSubtitle = (text: string) => {
+                if (cat.name !== 'Descuentos') return text;
+                const days = ['Lunes', 'Miercoles', 'Viernes'];
+                const parts = text.split(new RegExp(`(${days.join('|')})`));
+                return parts.map((part, idx) => 
+                  days.includes(part) ? <span key={idx} className="text-orange-300 font-bold text-stroke">{part}</span> : part
+                );
+              };
+
+              return (
+              <Link
                 key={cat.name}
+                to={cat.link}
                 className={
-                  "cursor-pointer rounded-2xl bg-gradient-to-r " +
+                  "group block rounded-3xl bg-gradient-to-r " +
                   cat.color +
-                  " p-6 text-white shadow-lg transition-transform hover:scale-105"
+                  " p-6 shadow-xl transition-transform hover:-translate-y-1 hover:shadow-2xl" +
+                  (["Promociones", "Descuentos"].includes(cat.name) ? " border-4 border-orange-500" : "")
                 }
               >
-                <div className="mb-2 text-4xl">{cat.emoji}</div>
+                <div className="mb-4 flex items-center justify-between gap-3">
+                  <div className="text-4xl">{cat.emoji}</div>
+                  <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-white">
+                    {cat.name === 'Promociones' ? 'Oferta' : 'Top'}
+                  </span>
+                </div>
 
-                <h3 className="text-xl font-bold">{cat.name}</h3>
+                <h3 className={`text-2xl font-bold text-stroke ${['Promociones', 'Descuentos'].includes(cat.name) ? 'text-orange-300' : 'text-white'}`}>{cat.name}</h3>
 
-                <p className="text-sm text-white/90">
-                  Ver opciones deliciosas de {cat.name.toLowerCase()}
+                <p className={`mt-2 whitespace-pre-line text-white ${['Promociones', 'Descuentos'].includes(cat.name) ? 'text-lg font-bold leading-tight' : 'text-sm text-white/90'}`}>
+                  {renderSubtitle(cat.subtitle)}
                 </p>
-              </div>
-            ))}
+
+                <div className={`mt-6 inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold shadow-sm transition-colors ${
+                  ['Promociones', 'Descuentos'].includes(cat.name) 
+                    ? 'bg-orange-500 text-white hover:bg-orange-600' 
+                    : 'bg-white/90 text-orange-600 group-hover:bg-white'
+                }`}>
+                  {cat.cta}
+                </div>
+              </Link>
+            );
+            })}
           </section>
         </>
       )}
 
-      <main className="mx-auto max-w-6xl px-4 pb-16">{children}</main>
+      <main className="w-[70%] mx-auto px-4 pb-16">{children}</main>
 
       <footer className="mt-10 border-t border-orange-200 bg-white py-6">
-        <div className="mx-auto max-w-6xl px-4 text-center text-sm text-gray-500">
+        <div className="w-[70%] mx-auto px-4 text-center text-sm text-gray-500">
           © {new Date().getFullYear()} FastFood Delivery — Hecho con 🍕
         </div>
       </footer>

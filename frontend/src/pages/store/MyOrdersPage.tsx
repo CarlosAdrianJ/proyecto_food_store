@@ -42,7 +42,7 @@ export default function MyOrdersPage() {
   }
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-8">
+    <main className="w-[70%] mx-auto px-4 py-8">
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-slate-800">Mis pedidos</h1>
         <p className="mt-2 text-slate-500">

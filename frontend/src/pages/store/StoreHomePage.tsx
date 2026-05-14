@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import CartBadge from '../../components/store/CartBadge'
 import ProductCard from '../../components/store/ProductCard'
 import StoreCategorySidebar from '../../components/store/StoreCategorySidebar'
@@ -32,6 +33,8 @@ export default function StoreHomePage() {
   const [search, setSearch] = useState('')
   const [sortBy, setSortBy] = useState<SortOption>('name-asc')
   const [cartCount, setCartCount] = useState(0)
+  const [searchParams] = useSearchParams()
+  const offer = searchParams.get('offer')
 
   useEffect(() => {
     setCartCount(getCartItemsCount())
@@ -138,19 +141,30 @@ export default function StoreHomePage() {
       />
 
       <div className="space-y-6">
-        <div className="rounded-2xl bg-white p-6 shadow-sm">
+        <div className="rounded-2xl bg-gradient-to-b from-yellow-100 via-orange-100 to-red-100 p-6 shadow-lg shadow-orange-200">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <h2 className="text-2xl font-bold text-slate-800">
-                Catálogo principal
+              <h2 className="text-2xl font-bold text-orange-900">
+                {offer === 'dia' ? 'Promociones y descuentos' : 'Catálogo principal'}
               </h2>
-              <p className="mt-1 text-slate-500">
-                Busca, filtra y agrega productos al carrito.
+              <p className="mt-1 text-orange-700">
+                {offer === 'dia'
+                  ? 'Descubre las ofertas del día y aprovecha descuentos exclusivos en el carrito.'
+                  : 'Busca, filtra y agrega productos al carrito.'}
               </p>
             </div>
 
             <CartBadge count={cartCount} />
           </div>
+
+          {offer === 'dia' && (
+            <div className="mt-6 rounded-2xl bg-gradient-to-r from-orange-100 via-yellow-100 to-red-100 p-6 text-orange-900 shadow-sm">
+              <p className="text-lg font-semibold">Ofertas del día</p>
+              <p className="mt-2 text-sm text-orange-800">
+                Estás viendo la mejor selección de promociones para tu pedido. Aprovecha los descuentos y agrega rápido al carrito.
+              </p>
+            </div>
+          )}
 
           <div className="mt-6 grid gap-4 md:grid-cols-[1fr_220px]">
             <div>

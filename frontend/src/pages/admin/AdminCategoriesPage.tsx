@@ -111,7 +111,7 @@ export default function AdminCategoriesPage() {
 
   return (
     <main className="min-h-screen bg-slate-100 p-6">
-      <div className="mx-auto max-w-6xl">
+      <div className="w-[70%] mx-auto">
         <div className="mb-6 flex flex-col gap-3 rounded-2xl bg-white p-6 shadow-sm md:flex-row md:items-center md:justify-between">
           <div>
             <h1 className="text-2xl font-bold text-slate-800">

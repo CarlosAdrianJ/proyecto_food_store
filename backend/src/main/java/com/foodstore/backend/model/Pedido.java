@@ -37,6 +37,15 @@ public class Pedido extends Base {
     @Column(nullable = false, length = 30)
     private FormaPago formaPago;
 
+    @Column(nullable = false, length = 30)
+    private String telefonoEntrega;
+
+    @Column(nullable = false, length = 255)
+    private String direccionEntrega;
+
+    @Column(length = 500)
+    private String notasAdicionales;
+
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DetallePedido> detalles = new ArrayList<>();
 
@@ -78,6 +87,7 @@ public class Pedido extends Base {
         for (DetallePedido detalle : detalles) {
             detalle.setPedido(null);
         }
+
         detalles.clear();
         recalcularTotal();
     }
@@ -87,6 +97,7 @@ public class Pedido extends Base {
 
         for (DetallePedido detalle : detalles) {
             detalle.recalcularSubtotal();
+
             if (detalle.getSubtotal() != null) {
                 nuevoTotal = nuevoTotal.add(detalle.getSubtotal());
             }
@@ -133,6 +144,30 @@ public class Pedido extends Base {
 
     public void setFormaPago(FormaPago formaPago) {
         this.formaPago = formaPago;
+    }
+
+    public String getTelefonoEntrega() {
+        return telefonoEntrega;
+    }
+
+    public void setTelefonoEntrega(String telefonoEntrega) {
+        this.telefonoEntrega = telefonoEntrega;
+    }
+
+    public String getDireccionEntrega() {
+        return direccionEntrega;
+    }
+
+    public void setDireccionEntrega(String direccionEntrega) {
+        this.direccionEntrega = direccionEntrega;
+    }
+
+    public String getNotasAdicionales() {
+        return notasAdicionales;
+    }
+
+    public void setNotasAdicionales(String notasAdicionales) {
+        this.notasAdicionales = notasAdicionales;
     }
 
     public List<DetallePedido> getDetalles() {

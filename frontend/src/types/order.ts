@@ -17,6 +17,9 @@ export type OrderDetailCreate = {
 export type OrderCreatePayload = {
   usuarioId: number
   formaPago: FormaPago
+  telefonoEntrega: string
+  direccionEntrega: string
+  notasAdicionales: string
   detalles: OrderDetailCreate[]
 }
 
@@ -43,6 +46,9 @@ export type Order = {
   total: number
   estado: EstadoPedido
   formaPago: FormaPago
+  telefonoEntrega: string
+  direccionEntrega: string
+  notasAdicionales: string | null
   detalles: OrderDetail[]
   createdAt: string
   updatedAt: string

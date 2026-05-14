@@ -12,8 +12,8 @@ export default function AppShell({ children }: AppShellProps) {
 
   return (
     <div className="min-h-screen bg-slate-100">
-      <header className="border-b bg-slate-900 px-6 py-4">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4">
+      <header className="border-b bg-slate-900 px-4 py-4">
+        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
           <div>
             <h1 className="text-lg font-bold text-white">Food Store</h1>
             {user && (
