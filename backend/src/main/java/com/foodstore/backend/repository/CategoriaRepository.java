@@ -4,7 +4,7 @@ import com.foodstore.backend.model.Categoria;
 
 import java.util.Optional;
 
-public interface CategoriaRepository extends BaseRepository<Categoria> {
+public interface CategoriaRepository extends BaseRepository<Categoria, Long> {
 
     Optional<Categoria> findByDenominacionIgnoreCaseAndEliminadoFalse(String denominacion);
 

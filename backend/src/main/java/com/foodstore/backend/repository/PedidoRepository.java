@@ -4,7 +4,7 @@ import com.foodstore.backend.model.Pedido;
 
 import java.util.List;
 
-public interface PedidoRepository extends BaseRepository<Pedido> {
+public interface PedidoRepository extends BaseRepository<Pedido, Long> {
 
     List<Pedido> findByUsuarioIdAndEliminadoFalse(Long usuarioId);
     List<Pedido> findByUsuarioIdAndEliminadoFalseOrderByFechaPedidoDesc(Long usuarioId);

@@ -5,7 +5,7 @@ import com.foodstore.backend.model.Usuario;
 
 import java.util.Optional;
 
-public interface UsuarioRepository extends BaseRepository<Usuario> {
+public interface UsuarioRepository extends BaseRepository<Usuario, Long> {
 
     Optional<Usuario> findByEmailAndEliminadoFalse(String email);
 

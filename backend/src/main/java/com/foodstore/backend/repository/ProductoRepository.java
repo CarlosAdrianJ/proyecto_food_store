@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface ProductoRepository extends BaseRepository<Producto> {
+public interface ProductoRepository extends BaseRepository<Producto, Long> {
 
     List<Producto> findByCategoriaIdAndEliminadoFalse(Long categoriaId);
 

@@ -1,3 +1,4 @@
+
 package com.foodstore.backend.service;
 
 import com.foodstore.backend.dto.LoginRequest;
@@ -8,6 +9,7 @@ import com.foodstore.backend.exception.BusinessException;
 import com.foodstore.backend.model.Rol;
 import com.foodstore.backend.model.Usuario;
 import com.foodstore.backend.repository.UsuarioRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,11 +17,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthService {
 
     private final UsuarioRepository usuarioRepository;
-    private final PasswordService passwordService;
+    private final PasswordEncoder passwordEncoder;
 
-    public AuthService(UsuarioRepository usuarioRepository, PasswordService passwordService) {
+    public AuthService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
-        this.passwordService = passwordService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
@@ -34,7 +36,7 @@ public class AuthService {
         usuario.setNombre(normalizarTexto(request.nombre()));
         usuario.setApellido(normalizarTexto(request.apellido()));
         usuario.setEmail(emailNormalizado);
-        usuario.setPassword(passwordService.hashPassword(request.password()));
+        usuario.setPassword(passwordEncoder.encode(request.password()));
         usuario.setTelefono(normalizarNullable(request.telefono()));
         usuario.setDireccion(normalizarNullable(request.direccion()));
         usuario.setRol(Rol.USUARIO);
@@ -51,7 +53,7 @@ public class AuthService {
         Usuario usuario = usuarioRepository.findByEmailAndEliminadoFalse(emailNormalizado)
                 .orElseThrow(() -> new BusinessException("Credenciales inválidas"));
 
-        boolean passwordValida = passwordService.matches(request.password(), usuario.getPassword());
+        boolean passwordValida = passwordEncoder.matches(request.password(), usuario.getPassword());
 
         if (!passwordValida) {
             throw new BusinessException("Credenciales inválidas");

@@ -6,11 +6,16 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 @Entity
+@SuperBuilder
+@NoArgsConstructor
 public class DetallePedido extends Base {
 
     @ManyToOne(optional = false)
@@ -27,6 +32,7 @@ public class DetallePedido extends Base {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal precioUnitario;
 
+    @Builder.Default
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal subtotal = BigDecimal.ZERO;
 

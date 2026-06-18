@@ -5,12 +5,17 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@SuperBuilder
+@NoArgsConstructor
 public class Producto extends Base {
 
     @Column(nullable = false, length = 150)
@@ -22,9 +27,11 @@ public class Producto extends Base {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal precio;
 
+    @Builder.Default
     @Column(nullable = false)
     private Integer stock = 0;
 
+    @Builder.Default
     @Column(nullable = false)
     private Boolean disponible = true;
 
@@ -35,6 +42,7 @@ public class Producto extends Base {
     @JoinColumn(name = "categoria_id", nullable = false)
     private Categoria categoria;
 
+    @Builder.Default
     @OneToMany(mappedBy = "producto")
     private List<DetallePedido> detallesPedido = new ArrayList<>();
 

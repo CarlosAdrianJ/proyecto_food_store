@@ -3,11 +3,16 @@ package com.foodstore.backend.model;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@SuperBuilder
+@NoArgsConstructor
 public class Categoria extends Base {
 
     @Column(nullable = false, unique = true, length = 100)
@@ -16,6 +21,7 @@ public class Categoria extends Base {
     @Column(length = 255)
     private String descripcion;
 
+    @Builder.Default
     @OneToMany(mappedBy = "categoria")
     private List<Producto> productos = new ArrayList<>();
 

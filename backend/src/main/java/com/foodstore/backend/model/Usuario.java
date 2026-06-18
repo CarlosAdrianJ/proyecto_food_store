@@ -5,11 +5,16 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.OneToMany;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@SuperBuilder
+@NoArgsConstructor
 public class Usuario extends Base {
 
     @Column(nullable = false, length = 100)
@@ -30,10 +35,12 @@ public class Usuario extends Base {
     @Column(length = 255)
     private String direccion;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private Rol rol = Rol.USUARIO;
 
+    @Builder.Default
     @OneToMany(mappedBy = "usuario")
     private List<Pedido> pedidos = new ArrayList<>();
 

@@ -8,6 +8,7 @@ import com.foodstore.backend.exception.BusinessException;
 import com.foodstore.backend.model.Rol;
 import com.foodstore.backend.model.Usuario;
 import com.foodstore.backend.repository.UsuarioRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,11 +19,11 @@ import java.util.Optional;
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
-    private final PasswordService passwordService;
+    private final PasswordEncoder passwordEncoder;
 
-    public UsuarioService(UsuarioRepository usuarioRepository, PasswordService passwordService) {
+    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
-        this.passwordService = passwordService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
@@ -37,7 +38,7 @@ public class UsuarioService {
         usuario.setNombre(normalizarTexto(dto.nombre()));
         usuario.setApellido(normalizarTexto(dto.apellido()));
         usuario.setEmail(emailNormalizado);
-        usuario.setPassword(passwordService.hashPassword(dto.password()));
+        usuario.setPassword(passwordEncoder.encode(dto.password()));
         usuario.setTelefono(normalizarNullable(dto.telefono()));
         usuario.setDireccion(normalizarNullable(dto.direccion()));
         usuario.setRol(dto.rol() != null ? dto.rol() : Rol.USUARIO);

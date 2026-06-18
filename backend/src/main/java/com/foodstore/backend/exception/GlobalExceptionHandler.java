@@ -3,6 +3,7 @@ package com.foodstore.backend.exception;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -11,7 +12,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -20,13 +24,9 @@ public class GlobalExceptionHandler {
             ResourceNotFoundException ex,
             HttpServletRequest request
     ) {
-        ErrorResponse response = buildErrorResponse(
-                HttpStatus.NOT_FOUND,
-                ex.getMessage(),
-                request.getRequestURI()
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                buildErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage())
         );
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
     @ExceptionHandler(BusinessException.class)
@@ -34,13 +34,9 @@ public class GlobalExceptionHandler {
             BusinessException ex,
             HttpServletRequest request
     ) {
-        ErrorResponse response = buildErrorResponse(
-                HttpStatus.BAD_REQUEST,
-                ex.getMessage(),
-                request.getRequestURI()
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage())
         );
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
@@ -48,13 +44,19 @@ public class GlobalExceptionHandler {
             IllegalArgumentException ex,
             HttpServletRequest request
     ) {
-        ErrorResponse response = buildErrorResponse(
-                HttpStatus.BAD_REQUEST,
-                ex.getMessage(),
-                request.getRequestURI()
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage())
         );
+    }
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalState(
+            IllegalStateException ex,
+            HttpServletRequest request
+    ) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                buildErrorResponse(HttpStatus.CONFLICT, ex.getMessage())
+        );
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -62,17 +64,15 @@ public class GlobalExceptionHandler {
             MethodArgumentNotValidException ex,
             HttpServletRequest request
     ) {
-        ValidationErrorResponse response = buildValidationErrorResponse(
-                HttpStatus.BAD_REQUEST,
-                "Error de validación",
-                request.getRequestURI()
-        );
+        Map<String, String> errors = new LinkedHashMap<>();
 
         for (FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
-            response.addError(fieldError.getField(), fieldError.getDefaultMessage());
+            errors.put(fieldError.getField(), fieldError.getDefaultMessage());
         }
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                buildValidationErrorResponse("Error de validación", errors)
+        );
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -80,17 +80,15 @@ public class GlobalExceptionHandler {
             ConstraintViolationException ex,
             HttpServletRequest request
     ) {
-        ValidationErrorResponse response = buildValidationErrorResponse(
-                HttpStatus.BAD_REQUEST,
-                "Error de validación",
-                request.getRequestURI()
-        );
+        Map<String, String> errors = new LinkedHashMap<>();
 
         for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
-            response.addError(violation.getPropertyPath().toString(), violation.getMessage());
+            errors.put(violation.getPropertyPath().toString(), violation.getMessage());
         }
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                buildValidationErrorResponse("Error de validación", errors)
+        );
     }
 
     @ExceptionHandler(Exception.class)
@@ -98,32 +96,29 @@ public class GlobalExceptionHandler {
             Exception ex,
             HttpServletRequest request
     ) {
-        ErrorResponse response = buildErrorResponse(
-                HttpStatus.INTERNAL_SERVER_ERROR,
-                "Ocurrió un error interno en el servidor",
-                request.getRequestURI()
-        );
+        log.error("Error interno no controlado en {}", request.getRequestURI(), ex);
 
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-    }
-
-    private ErrorResponse buildErrorResponse(HttpStatus status, String message, String path) {
-        return new ErrorResponse(
-                LocalDateTime.now(),
-                status.value(),
-                status.getReasonPhrase(),
-                message,
-                path
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                buildErrorResponse(
+                        HttpStatus.INTERNAL_SERVER_ERROR,
+                        "Ocurrió un error interno en el servidor"
+                )
         );
     }
 
-    private ValidationErrorResponse buildValidationErrorResponse(HttpStatus status, String message, String path) {
+    private ErrorResponse buildErrorResponse(HttpStatus status, String message) {
+        return new ErrorResponse(status.value(), message, LocalDateTime.now());
+    }
+
+    private ValidationErrorResponse buildValidationErrorResponse(
+            String message,
+            Map<String, String> errors
+    ) {
         return new ValidationErrorResponse(
-                LocalDateTime.now(),
-                status.value(),
-                status.getReasonPhrase(),
+                HttpStatus.BAD_REQUEST.value(),
                 message,
-                path
+                LocalDateTime.now(),
+                errors
         );
     }
 }

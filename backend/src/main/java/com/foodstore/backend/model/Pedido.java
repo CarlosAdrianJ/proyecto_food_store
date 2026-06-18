@@ -9,6 +9,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -17,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@SuperBuilder
+@NoArgsConstructor
 public class Pedido extends Base {
 
     @ManyToOne(optional = false)
@@ -26,9 +31,11 @@ public class Pedido extends Base {
     @Column(nullable = false)
     private LocalDateTime fechaPedido;
 
+    @Builder.Default
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal total = BigDecimal.ZERO;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
     private EstadoPedido estado = EstadoPedido.PENDIENTE;
@@ -46,6 +53,7 @@ public class Pedido extends Base {
     @Column(length = 500)
     private String notasAdicionales;
 
+    @Builder.Default
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DetallePedido> detalles = new ArrayList<>();
 
