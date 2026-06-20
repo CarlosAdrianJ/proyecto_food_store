@@ -13,8 +13,8 @@ export default function ProductCard({
   const sinStock = product.stock <= 0
 
   return (
-    <article className="overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-br from-yellow-50 via-orange-50 to-red-50 shadow-sm">
-      <div className="flex h-44 items-center justify-center bg-gradient-to-br from-yellow-100 via-orange-100 to-red-100">
+    <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-br from-yellow-50 via-orange-50 to-red-50 shadow-sm">
+      <div className="flex h-44 shrink-0 items-center justify-center bg-gradient-to-br from-yellow-100 via-orange-100 to-red-100">
         {product.imagenUrl ? (
           <img
             src={product.imagenUrl}
@@ -26,23 +26,23 @@ export default function ProductCard({
         )}
       </div>
 
-      <div className="p-5">
+      <div className="flex flex-1 flex-col p-5">
         <div className="mb-2 flex items-start justify-between gap-3">
-          <div>
+          <div className="min-w-0 flex-1">
             <p className="text-xs font-medium uppercase tracking-wide text-orange-600">
               {product.categoriaDenominacion}
             </p>
-            <h3 className="text-lg font-bold text-slate-800">
+            <h3 className="break-words text-lg font-bold leading-snug text-slate-800">
               {product.denominacion}
             </h3>
           </div>
 
-          <span className="rounded-full bg-slate-100 px-3 py-1 text-sm font-semibold text-slate-700">
+          <span className="shrink-0 rounded-full bg-slate-100 px-3 py-1 text-sm font-semibold text-slate-700">
             ${product.precio.toFixed(2)}
           </span>
         </div>
 
-        <p className="min-h-12 text-sm text-slate-500">
+        <p className="line-clamp-2 min-h-10 text-sm text-slate-500">
           {product.descripcion || 'Sin descripción disponible.'}
         </p>
 
@@ -58,7 +58,7 @@ export default function ProductCard({
           </span>
         </div>
 
-        <div className="mt-4 flex gap-2">
+        <div className="mt-auto flex gap-2 pt-4">
           <Link
             to={`/store/product/${product.id}`}
             className="flex-1 rounded-xl border border-orange-300 px-4 py-2 text-center text-sm font-medium text-orange-700 hover:bg-orange-50"

@@ -1,14 +1,13 @@
 import type { ReactNode } from "react";
 import {
   BrowserRouter,
-  Link,
   Navigate,
   NavLink,
   Route,
   Routes,
   useLocation,
 } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import GuestRoute from "./components/auth/GuestRoute";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
@@ -27,30 +26,22 @@ import AdminOrdersPage from "./pages/admin/AdminOrdersPage";
 
 const categories = [
   {
-    name: "Promociones",
-    emoji: "🔥",
-    color: "from-yellow-300 to-orange-400",
-    subtitle: "Hasta 20% off pizzas y empanadas",
-    link: "/store?offer=dia",
-    cta: "Ver ofertas del día",
-  },
-  {
     name: "Descuentos",
     emoji: "🍔",
-    color: "from-orange-200 to-red-300",
     subtitle:
       "Lunes: descuento 10% con MODO\nMiercoles: descuento 5% por compras superiores a $70.000\nViernes: descuento 10% con Tarjeta Visa de todos los bancos",
-    link: "/store",
-    cta: "Ver descuentos",
   },
   {
-    name: "Sándwiches",
-    emoji: "🥪",
-    color: "from-red-200 to-yellow-300",
-    subtitle: "Sabores rápidos y frescos",
-    link: "/store",
-    cta: "Ver sándwiches",
+    name: "Sucursales",
+    emoji: "📍",
+    subtitle: "Encontrá la Food Store más cercana y retirá tu pedido",
   },
+];
+
+const sucursales = [
+  { nombre: "Food Store Centro", direccion: "Av. San Martín 1250, Córdoba" },
+  { nombre: "Food Store Norte", direccion: "Bv. Chacabuco 890, Córdoba" },
+  { nombre: "Food Store Sur", direccion: "Av. Vélez Sarsfield 2100, Córdoba" },
 ];
 
 function RootRedirect() {
@@ -90,6 +81,13 @@ function FoodStoreLayout({ children }: FoodStoreLayoutProps) {
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
+  const scrollToMenu = () => {
+    const menuSection = document.getElementById("menu");
+    if (menuSection) {
+      menuSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
   const nextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % carouselImages.length);
   };
@@ -97,6 +95,14 @@ function FoodStoreLayout({ children }: FoodStoreLayoutProps) {
   const prevImage = () => {
     setCurrentImageIndex((prev) => (prev - 1 + carouselImages.length) % carouselImages.length);
   };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % carouselImages.length);
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [carouselImages.length]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50">
@@ -119,15 +125,13 @@ function FoodStoreLayout({ children }: FoodStoreLayoutProps) {
             </NavLink>
 
             {!isAdmin && (
-              <>
-                <NavLink to="/store" className={navLinkClass}>
-                  Menú
-                </NavLink>
-
-                <NavLink to="/store" className={navLinkClass}>
-                  Ofertas
-                </NavLink>
-              </>
+              <button
+                type="button"
+                onClick={scrollToMenu}
+                className="rounded-xl bg-orange-50 px-4 py-2 text-sm font-medium text-orange-800 transition hover:bg-orange-100"
+              >
+                Menú
+              </button>
             )}
 
             <NavLink to="/store/cart" className={navLinkClass}>
@@ -162,12 +166,17 @@ function FoodStoreLayout({ children }: FoodStoreLayoutProps) {
       {isStorePage && (
         <>
           <section className="w-[70%] mx-auto px-4 py-10">
-            <div className="relative rounded-3xl overflow-hidden shadow-xl">
-              <img
-                src={carouselImages[currentImageIndex].src}
-                alt={carouselImages[currentImageIndex].alt}
-                className="w-full h-[44rem] object-cover object-center"
-              />
+            <div className="relative h-[44rem] overflow-hidden rounded-3xl shadow-xl">
+              {carouselImages.map((image, index) => (
+                <img
+                  key={image.src}
+                  src={image.src}
+                  alt={image.alt}
+                  className={`absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-700 ease-in-out ${
+                    index === currentImageIndex ? "opacity-100" : "opacity-0"
+                  }`}
+                />
+              ))}
               <button
                 onClick={prevImage}
                 className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-2 rounded-full hover:bg-black/70 transition"
@@ -192,7 +201,7 @@ function FoodStoreLayout({ children }: FoodStoreLayoutProps) {
             </div>
           </section>
 
-          <section className="w-[70%] mx-auto mb-10 grid grid-cols-1 gap-6 px-4 md:grid-cols-3">
+          <section className="w-[70%] mx-auto mb-10 grid grid-cols-1 gap-6 px-4 md:grid-cols-2">
             {categories.map((cat) => {
               const renderSubtitle = (text: string) => {
                 if (cat.name !== 'Descuentos') return text;
@@ -203,39 +212,42 @@ function FoodStoreLayout({ children }: FoodStoreLayoutProps) {
                 );
               };
 
+              const cardClassName =
+                "rounded-3xl bg-gradient-to-r from-orange-200 to-red-300 border-4 border-orange-500 p-6 shadow-xl text-left";
+
               return (
-              <Link
-                key={cat.name}
-                to={cat.link}
-                className={
-                  "group block rounded-3xl bg-gradient-to-r " +
-                  cat.color +
-                  " p-6 shadow-xl transition-transform hover:-translate-y-1 hover:shadow-2xl" +
-                  (["Promociones", "Descuentos"].includes(cat.name) ? " border-4 border-orange-500" : "")
-                }
-              >
-                <div className="mb-4 flex items-center justify-between gap-3">
-                  <div className="text-4xl">{cat.emoji}</div>
-                  <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-white">
-                    {cat.name === 'Promociones' ? 'Oferta' : 'Top'}
-                  </span>
-                </div>
+                <article key={cat.name} className={cardClassName}>
+                  <div className="mb-4 flex items-center justify-between gap-3">
+                    <div className="text-4xl">{cat.emoji}</div>
+                    <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-white">
+                      Top
+                    </span>
+                  </div>
 
-                <h3 className={`text-2xl font-bold text-stroke ${['Promociones', 'Descuentos'].includes(cat.name) ? 'text-orange-300' : 'text-white'}`}>{cat.name}</h3>
+                  <h3 className="text-2xl font-bold text-stroke text-orange-300">{cat.name}</h3>
 
-                <p className={`mt-2 whitespace-pre-line text-white ${['Promociones', 'Descuentos'].includes(cat.name) ? 'text-lg font-bold leading-tight' : 'text-sm text-white/90'}`}>
-                  {renderSubtitle(cat.subtitle)}
-                </p>
-
-                <div className={`mt-6 inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold shadow-sm transition-colors ${
-                  ['Promociones', 'Descuentos'].includes(cat.name) 
-                    ? 'bg-orange-500 text-white hover:bg-orange-600' 
-                    : 'bg-white/90 text-orange-600 group-hover:bg-white'
-                }`}>
-                  {cat.cta}
-                </div>
-              </Link>
-            );
+                  {cat.name === 'Sucursales' ? (
+                    <div className="mt-4 space-y-3">
+                      <p className="text-lg font-bold leading-tight text-white">
+                        {cat.subtitle}
+                      </p>
+                      {sucursales.map((sucursal) => (
+                        <div
+                          key={sucursal.nombre}
+                          className="rounded-2xl bg-white/15 px-4 py-3 backdrop-blur-sm"
+                        >
+                          <p className="text-base font-bold text-orange-200">{sucursal.nombre}</p>
+                          <p className="mt-1 text-sm font-medium text-white/90">{sucursal.direccion}</p>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="mt-2 whitespace-pre-line text-lg font-bold leading-tight text-white">
+                      {renderSubtitle(cat.subtitle)}
+                    </p>
+                  )}
+                </article>
+              );
             })}
           </section>
         </>

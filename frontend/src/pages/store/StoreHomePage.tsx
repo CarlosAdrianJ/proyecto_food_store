@@ -132,7 +132,7 @@ export default function StoreHomePage() {
   }, [products, search, sortBy])
 
   return (
-    <section className="grid gap-6 lg:grid-cols-[280px_1fr]">
+    <section id="menu" className="grid scroll-mt-24 gap-6 lg:grid-cols-[280px_1fr]">
       <StoreCategorySidebar
         categories={categories}
         selectedCategoryId={selectedCategoryId}
@@ -231,7 +231,7 @@ export default function StoreHomePage() {
             No se encontraron productos con los filtros actuales.
           </div>
         ) : (
-          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid grid-cols-1 items-stretch gap-5 md:grid-cols-3">
             {visibleProducts.map((product) => (
               <ProductCard
                 key={product.id}
