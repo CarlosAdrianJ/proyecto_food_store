@@ -254,4 +254,5 @@ La aplicación web estará disponible en: `http://localhost:5173`
 
 ## Autor
 
-Proyecto desarrollado como Trabajo Práctico Integrador — Programación III.
+Carlos Jabazze
+
