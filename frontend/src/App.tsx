@@ -29,19 +29,19 @@ const categories = [
     name: "Descuentos",
     emoji: "🍔",
     subtitle:
-      "Lunes: descuento 10% con MODO\nMiercoles: descuento 5% por compras superiores a $70.000\nViernes: descuento 10% con Tarjeta Visa de todos los bancos",
+      "Lunes descuento 10% con MODO\nMiercoles descuento 5% por compras superiores a $70.000\nViernes descuento 10% con Tarjeta Visa de todos los bancos",
   },
   {
     name: "Sucursales",
     emoji: "📍",
-    subtitle: "Encontrá la Food Store más cercana y retirá tu pedido",
+    subtitle: "Encontrá la Food Store más cercana y retirá tu pedido o te lo llevamos",
   },
 ];
 
 const sucursales = [
-  { nombre: "Food Store Centro", direccion: "Av. San Martín 1250, Córdoba" },
-  { nombre: "Food Store Norte", direccion: "Bv. Chacabuco 890, Córdoba" },
-  { nombre: "Food Store Sur", direccion: "Av. Vélez Sarsfield 2100, Córdoba" },
+  { nombre: "Food Store Centro", direccion: "Av. Pellegrini 1250, Rosario" },
+  { nombre: "Food Store Norte", direccion: "Boulevard Rondeau 1655, Rosario" },
+  { nombre: "Food Store Sur", direccion: "Av. San Martín 4556, Rosario" },
 ];
 
 function RootRedirect() {
@@ -74,9 +74,10 @@ function FoodStoreLayout({ children }: FoodStoreLayoutProps) {
 
   const carouselImages = [
     { src: 'https://ik.imagekit.io/rooxjlwlq/b2d8905d-5ab3-47bb-b867-e707151dd245.jpeg', alt: 'Postre Rogel' },
-    { src: 'https://ik.imagekit.io/rooxjlwlq/unnamed%20(3).jpg', alt: 'Milanesa food store' },
-    { src: 'https://ik.imagekit.io/rooxjlwlq/unnamed%20(4).jpg', alt: 'Pizza con huevo' },
-    { src: 'https://ik.imagekit.io/rooxjlwlq/426c0bae-b428-4e11-9d43-13b19a8d0e53.jpeg', alt: 'Triple de pollo' },
+    { src: 'https://ik.imagekit.io/rooxjlwlq/Gemini_Generated_Image_piz0wapiz0wapiz0.png?updatedAt=1781211651724', alt: 'Canelones' },
+    { src: 'https://ik.imagekit.io/rooxjlwlq/Gemini_Generated_Image_zi9wd7zi9wd7zi9w.png?updatedAt=1781224198386', alt: 'Tostado especial' },
+    { src: 'https://ik.imagekit.io/rooxjlwlq/ChatGPT%20Image%2020%20jun%202026,%2011_18_50%20p.m..png', alt: 'Triple de pollo' },
+    { src: 'https://ik.imagekit.io/rooxjlwlq/Captura%20de%20pantalla%202026-06-11%20211650.png?updatedAt=1781223430449', alt: 'Bebidas' },
   ];
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -207,44 +208,55 @@ function FoodStoreLayout({ children }: FoodStoreLayoutProps) {
                 if (cat.name !== 'Descuentos') return text;
                 const days = ['Lunes', 'Miercoles', 'Viernes'];
                 const parts = text.split(new RegExp(`(${days.join('|')})`));
-                return parts.map((part, idx) => 
-                  days.includes(part) ? <span key={idx} className="text-orange-300 font-bold text-stroke">{part}</span> : part
+                return parts.map((part, idx) =>
+                  days.includes(part) ? (
+                    <span key={idx} className="block text-orange-400 font-bold text-stroke">
+                      {part}
+                    </span>
+                  ) : (
+                    <span key={idx} className="block text-slate-900">
+                      {part.trim()}
+                    </span>
+                  )
                 );
               };
 
-              const cardClassName =
-                "rounded-3xl bg-gradient-to-r from-orange-200 to-red-300 border-4 border-orange-500 p-6 shadow-xl text-left";
+              const cardClassName = `rounded-3xl border-4 p-6 shadow-2xl ${
+                cat.name === 'Descuentos'
+                  ? 'bg-gradient-to-r from-orange-300 via-red-400 to-yellow-200 border-orange-500'
+                  : 'bg-gradient-to-r from-yellow-200 via-orange-300 to-red-300 border-amber-600'
+              }`;
 
               return (
                 <article key={cat.name} className={cardClassName}>
                   <div className="mb-4 flex items-center justify-between gap-3">
                     <div className="text-4xl">{cat.emoji}</div>
-                    <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-white">
+                    <span className="rounded-full bg-white/30 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-orange-900">
                       Top
                     </span>
                   </div>
 
-                  <h3 className="text-2xl font-bold text-stroke text-orange-300">{cat.name}</h3>
+                  <h3 className="text-3xl font-bold text-slate-900">{cat.name}</h3>
 
                   {cat.name === 'Sucursales' ? (
                     <div className="mt-4 space-y-3">
-                      <p className="text-lg font-bold leading-tight text-white">
+                      <p className="text-lg font-bold leading-tight text-slate-900">
                         {cat.subtitle}
                       </p>
                       {sucursales.map((sucursal) => (
                         <div
                           key={sucursal.nombre}
-                          className="rounded-2xl bg-white/15 px-4 py-3 backdrop-blur-sm"
+                          className="rounded-2xl bg-white/80 px-4 py-3 shadow-inner shadow-orange-200"
                         >
-                          <p className="text-base font-bold text-orange-200">{sucursal.nombre}</p>
-                          <p className="mt-1 text-sm font-medium text-white/90">{sucursal.direccion}</p>
+                          <p className="text-base font-bold text-orange-700">{sucursal.nombre}</p>
+                          <p className="mt-1 text-sm font-medium text-slate-800">{sucursal.direccion}</p>
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <p className="mt-2 whitespace-pre-line text-lg font-bold leading-tight text-white">
+                    <div className="mt-2 space-y-1 text-center text-lg font-bold leading-tight text-slate-900">
                       {renderSubtitle(cat.subtitle)}
-                    </p>
+                    </div>
                   )}
                 </article>
               );
