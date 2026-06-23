@@ -14,19 +14,19 @@ Aplicación full stack para la gestión de categorías, productos, usuarios y pe
 
 ### Video demostrativo
 
-> El video debe tener **permisos públicos** de visualización (YouTube, Google Drive, etc.).
+> link para ver video explicativo del trabajo practico integrador Food Store:
 
-**[Ver video demostrativo del proyecto](https://www.youtube.com/watch?v=REEMPLAZAR_CON_TU_VIDEO)**
+**[https://drive.google.com/file/d/1QnuDGODgmwhtihxmNGxX2k93he28WAPF/view?usp=sharing]**
 
-> Reemplazá `REEMPLAZAR_CON_TU_VIDEO` por el ID o enlace real de tu video antes de entregar.
+
 
 ### Documentación en PDF
 
-La documentación técnica del proyecto está disponible en la raíz del repositorio:
+>link para ver el pdf explicativo del trabajo practico integrador Food Store:
 
-- [Descargar documentación (PDF)](./documentacion.pdf)
+- **[https://drive.google.com/file/d/1CZDN0EHpaxaFIquSFy0tu-65_24Xhia0/view?usp=sharing]**
 
-> Si preferís alojar el PDF externamente, reemplazá el enlace anterior por la URL pública del archivo.
+
 
 ---
 
